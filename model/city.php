@@ -34,9 +34,10 @@ class City
 	public static function getAll() {
 		$statement = $GLOBALS['pdo']->query('SELECT * FROM city ORDER BY id ASC');
 		$rows = [];
-		while($row = $statement-fetch(){
+		while($row = $statement->fetch()){
 			$rows[] = $row;
 		}
+		return $rows;
 	}
-
+	
 }
