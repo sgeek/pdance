@@ -17,3 +17,22 @@ try {
 }
 
 $GLOBALS['pdo'] = $pdo;
+
+function show_table($data) {
+	if(!is_array($data) || !is_array($data[0])) return false;
+	echo "<table><tr>";
+	$keys = array_keys($data[0]);
+	foreach($keys as $key) {
+		echo "<th>{$key}</th>";
+	}
+	echo "</tr>\n";
+	foreach($data as $row){
+		echo "<tr>";
+		foreach($row as $cell){
+			echo "<td>{$cell}</td>";
+		}
+		echo "</tr>\n";
+	}
+	
+	return true;
+}

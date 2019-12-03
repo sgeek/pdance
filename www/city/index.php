@@ -2,18 +2,20 @@
 
 require("../../main.php");
 
-$id = $_GET['city'] ?? 0;
+$title = "City";
+require("../head.php");
 
+$id = $_GET['city'] ?? 0;
 $id = (int) $id;
 
 
 if($id === 0) {
 	$cities = City::getAll();
-	var_dump($cities);
-	echo " all ";
+	show_table($cities);
 } else {
 	$city = new City($id);
-	var_dump($city);
-	echo " one ";
+	$city_array = $city->export();
+	show_table([$city_array]);
 }
+
 

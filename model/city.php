@@ -27,6 +27,14 @@ class City
 		$this->country = $row['country'];
 	}
 	
+	public function export(){
+		return [
+			'id' => $this->id,
+			'name' => $this->name,
+			'country' => $this->country
+		];
+	}
+	
 	public function saveToDb() {
 		
 	}
