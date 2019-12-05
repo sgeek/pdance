@@ -1,10 +1,12 @@
 <?php
 
-class City
+class Dancer
 {
 	public $id;
-	public $name;
-	public $country;
+	public $city;
+	public $firstName;
+	public $lastName;
+	public $cityName;
 	
 	function __construct($id=0, $name="", $country=""){
 		$this->id = $id;
@@ -40,11 +42,14 @@ class City
 	}
 
 	public static function getAll() {
-		$statement = $GLOBALS['pdo']->query('SELECT * FROM city ORDER BY id ASC');
+		$cities = City::getAll();
+		$statement = $GLOBALS['pdo']->query('SELECT * FROM dancer ORDER BY id ASC');
 		$rows = [];
 		while($row = $statement->fetch()){
 			$id = $row['id'];
-			$rows[$id] = $row;
+			$row['cityName'] = $cities[$id]['name'];
+			$row['country'] = $cities[$id]['country'];
+			$rows[] = $row;
 		}
 		return $rows;
 	}
