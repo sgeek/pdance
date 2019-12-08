@@ -1,6 +1,7 @@
 <?php
 
 require("model/city.php");
+require("model/dancer.php");
 
 require("config/credentials.php");
 

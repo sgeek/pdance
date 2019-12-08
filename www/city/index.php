@@ -5,7 +5,7 @@ require("../../main.php");
 $title = "City";
 require("../head.php");
 
-$id = $_GET['city'] ?? 0;
+$id = $_GET['id'] ?? 0;
 $id = (int) $id;
 
 

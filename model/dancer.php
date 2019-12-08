@@ -6,33 +6,51 @@ class Dancer
 	public $city;
 	public $firstName;
 	public $lastName;
+	public $name;
 	public $cityName;
+	public $country;
 	
-	function __construct($id=0, $name="", $country=""){
+	function __construct($id=0, $firstName="", $lastName="", $city=0){
 		$this->id = $id;
-		$this->name = $name;
-		$this->country = $country;
+		$this->firstName = $firstName;
+		$this->lastName = $lastName;
+		$this->city = $city;
 		
-		if($id > 0 && $name === "" && $country === "") {
+		if($id > 0 && $firstName === "" && $lastName === "") {
 			$this->loadFromDb();
-		} else if(strlen($name) > 0 && strlen($country) > 0) {
+		} else if(strlen($firstName) > 0 && strlen($lastName) > 0) {
 			$this->saveToDb();
 		}
 	}
 
 	public function loadFromDb() {
-		$statement = $GLOBALS['pdo']->prepare('SELECT * FROM city WHERE id = :id');
+		//Fetch from dancer table
+		$statement = $GLOBALS['pdo']->prepare('SELECT * FROM dancer WHERE id = :id');
 		$statement->execute(['id' => $this->id]);
 		$row = $statement->fetch();
 		
-		$this->name = $row['name'];
-		$this->country = $row['country'];
+		//Extract from table row
+		$this->firstName = $row['firstName'];
+		$this->lastName = $row['lastName'];
+		$this->name = $row['firstName'] . " " . $row['lastName'];
+		$this->city = $row['city'];
+		
+		//Fetch from city table (via City class)
+		$cityObject = new City($this->city);
+		$cityDetails = $cityObject->export();
+		$this->cityName = $cityDetails['name'];
+		$this->country = $cityDetails['country'];
+		
 	}
 	
 	public function export(){
 		return [
 			'id' => $this->id,
+			'city' => $this->city,
+			'firstName' => $this->firstName,
+			'lastName' => $this->lastName,
 			'name' => $this->name,
+			'cityName' => $this->cityName,
 			'country' => $this->country
 		];
 	}
@@ -43,13 +61,17 @@ class Dancer
 
 	public static function getAll() {
 		$cities = City::getAll();
-		$statement = $GLOBALS['pdo']->query('SELECT * FROM dancer ORDER BY id ASC');
+		$statement = $GLOBALS['pdo']->query('SELECT * FROM dancer ORDER BY firstName ASC, lastName ASC');
 		$rows = [];
 		while($row = $statement->fetch()){
 			$id = $row['id'];
-			$row['cityName'] = $cities[$id]['name'];
-			$row['country'] = $cities[$id]['country'];
-			$rows[] = $row;
+			$city = $row['city'];
+			$currentCity = $cities[$city] ?? false;
+			if($currentCity) {
+				$row['cityName'] = $currentCity['name'];
+				$row['country'] = $currentCity['country'];
+				$rows[] = $row;
+			}
 		}
 		return $rows;
 	}
