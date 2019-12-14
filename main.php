@@ -20,9 +20,9 @@ try {
 $GLOBALS['pdo'] = $pdo;
 
 function show_table($data) {
-	if(!is_array($data) || !is_array($data[0])) return false;
+	if(!is_array($data) || !is_array(array_values($data)[0])) return false;
 	echo "<table><tr>";
-	$keys = array_keys($data[0]);
+	$keys = array_keys(array_values($data)[0]);
 	foreach($keys as $key) {
 		echo "<th>{$key}</th>";
 	}
