@@ -6,14 +6,14 @@ class Level
 	public $code;
 	public $name;
 
-	function __construct($id=0, $code="", $name=""){
+	function __construct($id=-1, $code="", $name=""){
 		$this->id = $id;
 		$this->code = $code;
 		$this->name = $name;
 
-		if($id > 0 && $code === "" && $name === "") {
+		if($id >= 0 && $code === "" && $name === "") {
 			$this->loadFromDb();
-		} else if($id > 0 && strlen($code) > 0 && strlen($name) > 0) {
+		} else if($id >= 0 && strlen($code) > 0 && strlen($name) > 0) {
 			$this->saveToDb();
 		}
 	}
