@@ -10,16 +10,16 @@ class Comp
 	public $year;
 	public $country;
 	public $folder;
-	
-	function __construct($id=0, $date="", $city=0, $name="", $year="", $folder=""){
+
+	function __construct($id=-1, $date="", $city=0, $name="", $year="", $folder=""){
 		$this->id = $id;
 		$this->date = $date;
 		$this->city = $city;
 		$this->name = $name;
 		$this->year = $year;
 		$this->folder = $folder;
-		
-		if($id > 0 && $date === "" && $name === "") {
+
+		if($id >= 0 && $date === "" && $name === "") {
 			$this->loadFromDb();
 		} else if(strlen($name) > 0 && strlen($year) > 0) {
 			$this->saveToDb();
@@ -31,23 +31,23 @@ class Comp
 		$statement = $GLOBALS['pdo']->prepare('SELECT * FROM comp WHERE id = :id');
 		$statement->execute(['id' => $this->id]);
 		$row = $statement->fetch();
-		
+
 		//Extract from table row
 		$this->date = $row['date'];
 		$this->city = $row['city'];
 		$this->name = $row['name'];
 		$this->year = $row['year'];
 		$this->folder = $row['folder'];
-		
-		
+
+
 		//Fetch from city table (via City class)
 		$cityObject = new City($this->city);
 		$cityDetails = $cityObject->export();
 		$this->cityName = $cityDetails['name'];
 		$this->country = $cityDetails['country'];
-		
+
 	}
-	
+
 	public function export(){
 		return [
 			'id' => $this->id,
@@ -60,9 +60,9 @@ class Comp
 			'folder' => $this->folder
 		];
 	}
-	
+
 	public function saveToDb() {
-		
+
 	}
 
 	public static function getAll() {
@@ -81,5 +81,5 @@ class Comp
 		}
 		return $rows;
 	}
-	
+
 }

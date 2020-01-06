@@ -5,11 +5,11 @@ require("../../main.php");
 $title = "Comp";
 require("../head.php");
 
-$id = $_GET['id'] ?? 0;
+$id = $_GET['id'] ?? -1;
 $id = (int) $id;
 
 
-if($id === 0) {
+if($id === -1) {
 	$comps = Comp::getAll();
 	show_table($comps);
 } else {
@@ -17,5 +17,3 @@ if($id === 0) {
 	$comp_array = $comp->export();
 	show_table([$comp_array]);
 }
-
-
