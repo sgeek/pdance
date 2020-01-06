@@ -8,12 +8,12 @@ class School
 	public $cityName;
 	public $country;
 
-	function __construct($id=0, $city=0, $name=""){
+	function __construct($id=-1, $city=0, $name=""){
 		$this->id = $id;
 		$this->city = $city;
 		$this->name = $name;
 
-		if($id > 0 && $city === 0 && $name === "") {
+		if($id >= 0 && $city === 0 && $name === "") {
 			$this->loadFromDb();
 		} else if($city > 0 && strlen($name) > 0) {
 			$this->saveToDb();

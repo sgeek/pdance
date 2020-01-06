@@ -5,11 +5,11 @@ require("../../main.php");
 $title = "School";
 require("../head.php");
 
-$id = $_GET['id'] ?? 0;
+$id = $_GET['id'] ?? -1;
 $id = (int) $id;
 
 
-if($id === 0) {
+if($id === -1) {
 	$schools = School::getAll();
 	show_table($schools);
 } else {
