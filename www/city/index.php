@@ -5,11 +5,11 @@ require("../../main.php");
 $title = "City";
 require("../head.php");
 
-$id = $_GET['id'] ?? 0;
+$id = $_GET['id'] ?? -1;
 $id = (int) $id;
 
 
-if($id === 0) {
+if($id === -1) {
 	$cities = City::getAll();
 	show_table($cities);
 } else {
@@ -17,5 +17,3 @@ if($id === 0) {
 	$city_array = $city->export();
 	show_table([$city_array]);
 }
-
-

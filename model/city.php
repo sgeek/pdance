@@ -5,13 +5,13 @@ class City
 	public $id;
 	public $name;
 	public $country;
-	
-	function __construct($id=0, $name="", $country=""){
+
+	function __construct($id=-1, $name="", $country=""){
 		$this->id = $id;
 		$this->name = $name;
 		$this->country = $country;
-		
-		if($id > 0 && $name === "" && $country === "") {
+
+		if($id >= 0 && $name === "" && $country === "") {
 			$this->loadFromDb();
 		} else if(strlen($name) > 0 && strlen($country) > 0) {
 			$this->saveToDb();
@@ -22,11 +22,11 @@ class City
 		$statement = $GLOBALS['pdo']->prepare('SELECT * FROM city WHERE id = :id');
 		$statement->execute(['id' => $this->id]);
 		$row = $statement->fetch();
-		
+
 		$this->name = $row['name'];
 		$this->country = $row['country'];
 	}
-	
+
 	public function export(){
 		return [
 			'id' => $this->id,
@@ -34,9 +34,9 @@ class City
 			'country' => $this->country
 		];
 	}
-	
+
 	public function saveToDb() {
-		
+
 	}
 
 	public static function getAll() {
@@ -48,5 +48,5 @@ class City
 		}
 		return $rows;
 	}
-	
+
 }
