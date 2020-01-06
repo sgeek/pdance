@@ -9,14 +9,14 @@ class Dancer
 	public $name;
 	public $cityName;
 	public $country;
-	
-	function __construct($id=0, $firstName="", $lastName="", $city=0){
+
+	function __construct($id=-1, $firstName="", $lastName="", $city=0){
 		$this->id = $id;
 		$this->firstName = $firstName;
 		$this->lastName = $lastName;
 		$this->city = $city;
-		
-		if($id > 0 && $firstName === "" && $lastName === "") {
+
+		if($id >= 0 && $firstName === "" && $lastName === "") {
 			$this->loadFromDb();
 		} else if(strlen($firstName) > 0 && strlen($lastName) > 0) {
 			$this->saveToDb();
@@ -28,21 +28,21 @@ class Dancer
 		$statement = $GLOBALS['pdo']->prepare('SELECT * FROM dancer WHERE id = :id');
 		$statement->execute(['id' => $this->id]);
 		$row = $statement->fetch();
-		
+
 		//Extract from table row
 		$this->firstName = $row['firstName'];
 		$this->lastName = $row['lastName'];
 		$this->name = $row['firstName'] . " " . $row['lastName'];
 		$this->city = $row['city'];
-		
+
 		//Fetch from city table (via City class)
 		$cityObject = new City($this->city);
 		$cityDetails = $cityObject->export();
 		$this->cityName = $cityDetails['name'];
 		$this->country = $cityDetails['country'];
-		
+
 	}
-	
+
 	public function export(){
 		return [
 			'id' => $this->id,
@@ -54,9 +54,9 @@ class Dancer
 			'country' => $this->country
 		];
 	}
-	
+
 	public function saveToDb() {
-		
+
 	}
 
 	public static function getAll() {
@@ -75,5 +75,5 @@ class Dancer
 		}
 		return $rows;
 	}
-	
+
 }
