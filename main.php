@@ -3,6 +3,7 @@
 require("model/city.php");
 require("model/dancer.php");
 require("model/comp.php");
+require("model/school.php");
 
 require("config/credentials.php");
 
@@ -23,7 +24,7 @@ $GLOBALS['pdo'] = $pdo;
 function show_table($data) {
 	if(!is_array($data) || !is_array(array_values($data)[0])) return false;
 	echo "<table><tr>";
-	$keys = array_keys(array_values($data)[0]);
+	$keys = array_keys(array_values($data)[0]); // get column headings (key names from the first row of data)
 	foreach($keys as $key) {
 		echo "<th>{$key}</th>";
 	}
@@ -35,6 +36,6 @@ function show_table($data) {
 		}
 		echo "</tr>\n";
 	}
-	
+
 	return true;
 }
