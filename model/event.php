@@ -5,13 +5,13 @@ class Event
 	public $id;
 	public $name;
 
-	function __construct($id=0, $name=""){
+	function __construct($id=-1, $name=""){
 		$this->id = $id;
 		$this->name = $name;
 
-		if($id > 0 && $name === "") {
+		if($id >= 0 && $name === "") {
 			$this->loadFromDb();
-		} else if($id > 0 && strlen($name) > 0) {
+		} else if($id >= 0 && strlen($name) > 0) {
 			$this->saveToDb();
 		}
 	}
