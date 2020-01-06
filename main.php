@@ -4,6 +4,7 @@ require("model/city.php");
 require("model/dancer.php");
 require("model/comp.php");
 require("model/school.php");
+require("model/event.php");
 
 require("config/credentials.php");
 
