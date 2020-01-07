@@ -6,6 +6,7 @@ require("model/comp.php");
 require("model/school.php");
 require("model/event.php");
 require("model/level.php");
+require("model/performanceType.php");
 
 require("config/credentials.php");
 
