@@ -11,7 +11,7 @@ class Comp
 	public $country;
 	public $folder;
 
-	function __construct($id=-1, $date="", $city=0, $name="", $year="", $folder=""){
+	function __construct($id=-1, $date="", $city=-1, $name="", $year="", $folder=""){
 		$this->id = $id;
 		$this->date = $date;
 		$this->city = $city;
