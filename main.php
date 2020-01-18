@@ -32,7 +32,7 @@ function show_table($data, $columns=[]) {
     return false;
   }
 	echo "<table><tr>";
-	
+
 	//If columns aren't specified, use array keys instead
 	if(!$columns) {
 		$columns = array_keys(array_values($data)[0]); // get column headings (key names from the first row of data)
@@ -47,7 +47,8 @@ function show_table($data, $columns=[]) {
 		echo "<tr>";
 		foreach($columns as $key => $name){
 			if(is_numeric($key)) $key = $name;
-			echo "<td>{$row[$key]}</td>";
+      $value = $row[$key] ?? "";
+			echo "<td>{$value}</td>";
 		}
 		echo "</tr>\n";
 	}

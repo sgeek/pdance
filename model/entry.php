@@ -2,6 +2,7 @@
 
 class Entry
 {
+	//Direct properties (stored in `entry` table)
 	public $id;
 	public $comp;
 	public $event;
@@ -9,6 +10,14 @@ class Entry
 	public $lead;
 	public $follow;
 	public $other;
+
+	//Indirect properties (stored in other tables)
+	public $compName;
+	public $eventName;
+	public $levelCode;
+	public $leadName;
+	public $followName;
+	public $otherName;
 
 	function __construct($id=-1, $comp=-1, $event=-1, $level=-1, $lead=-1, $follow=-1, $other=-1){
 		$this->id = $id;
@@ -41,9 +50,9 @@ class Entry
 		$this->other = $row['other'];
 
 		$this->loadComp();
-//		$this->loadEvent();
-//		$this->loadLevel();
-//		$this->loadDancers();
+		$this->loadEvent();
+		$this->loadLevel();
+		$this->loadDancers();
 
 	}
 
@@ -55,16 +64,48 @@ class Entry
 		$this->compName = $compDetails['name'] . " " . $compDetails['year'];
 	}
 
+	public function loadEvent() {
+		//Fetch from event table (via Event class)
+		$eventObject = new Event($this->event);
+		$eventDetails = $eventObject->export();
+		$this->eventName = $eventDetails['name'];
+	}
+
+	public function loadLevel() {
+		//Fetch from level table (via Level class)
+		$levelObject = new Level($this->level);
+		$levelDetails = $levelObject->export();
+		$this->levelCode = $levelDetails['code'];
+	}
+
+	public function loadDancers() {
+		$this->leadName = $this->getDancerName($this->lead);
+		$this->followName = $this->getDancerName($this->follow);
+		$this->otherName = $this->getDancerName($this->other);
+	}
+
+	public function getDancerName($id) {
+		$dancerObject = new Dancer($id);
+		$dancerDetails = $dancerObject->export();
+		return $dancerDetails['firstName'] . ' ' . $dancerDetails['lastName'];
+
+	}
+
 	public function export(){
 		return [
 			'id' => $this->id,
-			'date' => $this->date,
-			'city' => $this->city,
-			'name' => $this->name,
-			'cityName' => $this->cityName,
-			'year' => $this->year,
-			'country' => $this->country,
-			'folder' => $this->folder
+			'comp' => $this->comp,
+			'event' => $this->event,
+			'level' => $this->level,
+			'lead' => $this->lead,
+			'follow' => $this->follow,
+			'other' => $this->other,
+			'compName' => $this->compName,
+			'eventName' => $this->eventName,
+			'levelCode' => $this->levelCode,
+			'leadName' => $this->leadName,
+			'followName' => $this->followName,
+			'otherName' => $this->otherName,
 		];
 	}
 
