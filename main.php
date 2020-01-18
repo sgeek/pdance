@@ -8,6 +8,7 @@ require("model/event.php");
 require("model/level.php");
 require("model/performanceType.php");
 require("model/round.php");
+require("model/entry.php");
 
 require("config/credentials.php");
 
@@ -25,18 +26,28 @@ try {
 
 $GLOBALS['pdo'] = $pdo;
 
-function show_table($data) {
-	if(!is_array($data) || !is_array(array_values($data)[0])) return false;
+function show_table($data, $columns=[]) {
+	if(!is_array($data) || !$data || !is_array(array_values($data)[0])) {
+    echo "Error: Cannot display table<br />\n";
+    return false;
+  }
 	echo "<table><tr>";
-	$keys = array_keys(array_values($data)[0]); // get column headings (key names from the first row of data)
-	foreach($keys as $key) {
-		echo "<th>{$key}</th>";
+	
+	//If columns aren't specified, use array keys instead
+	if(!$columns) {
+		$columns = array_keys(array_values($data)[0]); // get column headings (key names from the first row of data)
+	}
+
+	//Display table headings
+	foreach($columns as $key => $name) {
+		echo "<th>{$name}</th>";
 	}
 	echo "</tr>\n";
 	foreach($data as $row){
 		echo "<tr>";
-		foreach($row as $cell){
-			echo "<td>{$cell}</td>";
+		foreach($columns as $key => $name){
+			if(is_numeric($key)) $key = $name;
+			echo "<td>{$row[$key]}</td>";
 		}
 		echo "</tr>\n";
 	}

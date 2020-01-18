@@ -70,7 +70,7 @@ class Dancer
 			if($currentCity) {
 				$row['cityName'] = $currentCity['name'];
 				$row['country'] = $currentCity['country'];
-				$rows[] = $row;
+				$rows[$id] = $row;
 			}
 		}
 		return $rows;
