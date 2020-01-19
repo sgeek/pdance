@@ -9,6 +9,7 @@ require("model/level.php");
 require("model/performanceType.php");
 require("model/round.php");
 require("model/entry.php");
+require("model/video.php");
 
 require("config/credentials.php");
 
