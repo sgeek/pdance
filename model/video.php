@@ -191,6 +191,134 @@ class Video
 
 	}
 
+	// Use a more complex query, return a result set tailored for public display
+	public static function getPublic($filters=[]) {
+		// Map url_param filters to table columns
+		$columns = [
+			'comp' => 'entry.comp',
+			'year' => 'comp.year',
+			'round' => 'video.round',
+			'level' => 'entry.level',
+			'type' => 'video.type',
+			'event' => 'entry.event',
+		];
+
+		$filterText = "";
+		foreach($filters as $key => $value) {
+			if($value === "all") continue;
+			$value = intval($value); // Sanitise values
+			if($key === "dancer" || $key === "dancer2") {
+				$filterText .= "\n\t && (vfdancer.id = {$value} || eldancer.id = {$value} || efdancer.id = {$value} || eodancer.id = {$value})";
+			} else {
+				$column = $columns[$key] ?? ""; //Convert keys to column refs (and sanitise)
+				if($column) {
+					$filterText .= "\n\t && {$column} = {$value}";
+				}
+			}
+		}
+		$query = <<<EOT
+		SELECT
+			video.id,
+		    video.entry AS entry_id,
+		    video.follow AS video_follow_id,
+		    video.round AS round_id,
+		    video.heat,
+		    video.type AS type_id,
+		    video.seconds,
+		    video.code,
+		    video.url,
+
+		    entry.comp AS comp_id,
+		    entry.event AS event_id,
+		    entry.level AS level_id,
+		    entry.lead AS entry_lead_id,
+		    entry.follow AS entry_follow_id,
+		    entry.other AS entry_other_id,
+
+		    vfdancer.firstName AS video_follow_first,
+		    vfdancer.lastName AS video_follow_last,
+		    eldancer.firstName AS entry_lead_first,
+		    eldancer.lastName AS entry_lead_last,
+		    efdancer.firstName AS entry_follow_first,
+		    efdancer.lastName AS entry_follow_last,
+		    eodancer.firstName AS entry_other_first,
+		    eodancer.lastName AS entry_other_last,
+
+			round.name AS round_name,
+
+		    performance_type.name AS performance_type_name,
+
+			comp.date AS comp_date,
+		    comp.city AS comp_city,
+		    comp.name AS comp_name,
+		    comp.year AS comp_year,
+
+		    event.name AS event_name,
+		    level.code AS level_code,
+				level.name AS level_name
+		FROM
+			video
+		    LEFT JOIN entry ON video.entry = entry.id
+		    LEFT JOIN dancer AS vfdancer ON video.follow = vfdancer.id
+		    LEFT JOIN round on video.round = round.id
+		    LEFT JOIN performance_type ON video.type = performance_type.id
+		    LEFT JOIN comp ON entry.comp = comp.id
+		    LEFT JOIN event ON entry.event = event.id
+		    LEFT JOIN level ON entry.level = level.id
+		    LEFT JOIN dancer AS eldancer ON entry.lead = eldancer.id
+		    LEFT JOIN dancer AS efdancer ON entry.follow = efdancer.id
+		    LEFT JOIN dancer AS eodancer ON entry.other = eodancer.id
+		WHERE
+			1
+		    && LENGTH(video.url) > 0
+				{$filterText}
+		ORDER BY
+			`comp`.`date` ASC,
+			`video`.`code`  ASC
+EOT;
+		$statement = $GLOBALS['pdo']->query($query);
+		$rows = [];
+		while($row = $statement->fetch()){
+			$id = $row['id'];
+
+			// Follow ID and name (either from video record or from entry record)
+			if($row['entry_follow_id'] > $row['video_follow_id']) {
+				$row['followId'] = $row['entry_follow_id'];
+				$row['followName'] = $row['entry_follow_first'] . ' ' . $row['entry_follow_last'];
+			} else {
+				$row['followId'] = $row['video_follow_id'];
+				$row['followName'] = $row['video_follow_first'] . ' ' . $row['video_follow_last'];
+			}
+
+			// Lead and Other names, constructed from entry records
+			$row['leadName'] = $row['entry_lead_first'] . ' ' . $row['entry_lead_last'];
+			$row['otherName'] = $row['entry_other_first'] . ' ' . $row['entry_other_last'];
+
+			// YouTube link markup, constructed from video record
+			$urlPieces = explode('/', $row['url']);
+			$videoId = array_pop($urlPieces);
+			$row['linkMarkup'] = "<a href='{$row['url']}'>{$videoId}</a>";
+
+			// Comp name (including year)
+			$row['compName'] = $row['comp_name'] . ' ' . $row['comp_year'];
+
+			// Round name, including number if non-zero
+			$row['roundName'] = $row['round_name'];
+			if($row['heat'] > 0) $row['roundName'] .=  ' ' . $row['heat'];
+
+			// Convert video length from seconds to min:sec
+			$min = floor($row['seconds']/60);
+			$sec = gmdate("s", $row['seconds']);
+			$row['length'] = $min . ":" . $sec;
+
+			$rows[$id] = $row;
+
+	}
+	return $rows;
+}
+
+
+
 	public static function getAll() {
 		$entries = Entry::getAll();
 		$rounds = Round::getAll();

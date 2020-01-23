@@ -2,31 +2,31 @@
 
 require("../../main.php");
 
-$title = "Video";
+$title = "Pat's MJ Comp Videos";
 require("../head.php");
 
 $id = $_GET['id'] ?? -1;
 $id = (int) $id;
 
 $columns = [
-	'id' => 'ID',
+//	'id' => 'ID',
 	'compName' => 'Comp',
-	'eventName' => 'Event',
-	'levelCode' => 'Level',
+	'code' => 'Code',
+	'level_code' => 'Lvl',
+	'event_name' => 'Event',
+	'roundName' => 'Round',
+	'performance_type_name' => 'Type',
 	'leadName' => 'Lead',
 	'followName' => 'Follow',
 	'otherName' => 'Other',
-	'roundName' => 'Round',
-	'heat' => 'Heat',
-	'performanceType' => 'Type',
-	'seconds' => 'Duration',
-	'code' => 'Timecode',
+//	'heat' => 'Heat',
 	'linkMarkup' => 'YouTube',
-	'note' => 'Note',
+	'seconds' => 'Sec',
+//	'note' => 'Note',
 ];
 
 if($id === -1) {
-	$videos = Video::getAll();
+	$videos = Video::getPublic($_GET);
 	show_table($videos, $columns);
 } else {
 	$video = new Video($id);

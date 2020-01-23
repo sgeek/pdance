@@ -1,0 +1,55 @@
+--
+Display stuff (before I put a subset of the codebase up to display my instance):
+--
+(purely about public listing of videos)
+- Implement filters on the front end
+- Implement column sorting on the front end (?)
+- Make front end prettier, just that one page
+
+
+--
+Data entry stuff (before next comp):
+--
+(purely about data entry - neater, and not requiring phpMyAdmin)
+- Implement comp_event and comp_level
+- Add (and implement) comp_performance_type
+- Implement comp_dancer
+- Proper management for all background data:
+	- city
+	- comp (also handles comp_event and comp_level)
+	- dancer
+	- event
+	- level
+	- performance_type
+	- round
+	- school
+	
+
+--
+Auth stuff part 1 (before I use the full codebase for my public instance):
+--
+(purely about securing pDance so that the management interface is safe to be public)
+- Implement authentication
+	- User table
+		- id
+		- email
+		- name
+		- password (hash)
+		- verifed (timestamp)
+		- session
+	- "Add user" page
+		- Accessible to all users; all known users assumed admin for now
+		- If users table empty, accessible to anyone
+		- Send email, rely on email verification
+			- Set session field on account creation, use that session ID as a safe email verification code
+	- Password reset
+		- Require email and name (so eg. "user@name.com" and "User Name"
+		- Set session hash, send email using session hash as verification code
+		- On nav to reset page with correct session hash provided:
+			- Set new session hash, embed as hidden field in password reset form
+			- Take password (and duplicate for confirmation)
+			- On form submit:
+				- Confirm that password1 and password2 match
+				- Clear session field
+				- Write password hash to password field
+				- Set verified field to current timestamp
