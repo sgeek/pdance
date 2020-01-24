@@ -2,9 +2,9 @@
 $start = microtime(true);
 
 // Public display of all public videos
-require("../pdo.php");
-require("../functions.php");
-require("../model/video.php");
+require("pdo.php");
+require("functions.php");
+require("model/video.php");
 
 $title = "Pat's MJ Comp Videos";
 
@@ -124,6 +124,7 @@ $eventDropdown = dropdown_markup('event', $events, $_GET['event'] ?? 'all');
 $dancerDropdown = dropdown_markup('dancer', $dancers, $_GET['dancer'] ?? 'all');
 $dancer2Dropdown = dropdown_markup('dancer2', $dancers, $_GET['dancer2'] ?? 'all');
 
+// Display filter dropdowns
 echo <<<EOT
 <div class="page">
 	<form method="GET" action="">
@@ -151,10 +152,17 @@ echo <<<EOT
 		<br />
 EOT;
 
+// Display actual table of video data
 show_table($videos, $columns);
+echo "</div>";
+
+// Hidden display of page render time
 $numVideos = count($videos);
 $elapsed = microtime(true) - $start;
 $milli = 0.1 * floor($elapsed*1000);
 echo "<p style='display:none;'>{$numVideos} videos in {$milli} ms</p>";
 
-echo "</div>";
+echo <<<EOT
+	</body>
+</html>
+EOT;

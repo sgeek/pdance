@@ -25,6 +25,7 @@ function show_table($data, $columns=[]) {
 		}
 		echo "</tr>\n";
 	}
+	echo "</table>";
 
 	return true;
 }
