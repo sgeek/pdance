@@ -1,6 +1,10 @@
 <?php
 // Public display of all public videos
 
+// Title for this instance of pDance
+$title = "Pat's MJ Comp Videos";
+
+
 $start = microtime(true);
 
 // Clean up URL
@@ -12,8 +16,6 @@ if($uri !== $_SERVER['REQUEST_URI']) header("Location: {$uri}");
 require("pdo.php");
 require("functions.php");
 require("model/video.php");
-
-$title = "Pat's MJ Comp Videos";
 
 echo <<<EOT
 <html>
