@@ -1,7 +1,14 @@
 <?php
+// Public display of all public videos
+
 $start = microtime(true);
 
-// Public display of all public videos
+// Clean up URL
+$uri = preg_replace('/\w+=all&?/', '', $_SERVER['REQUEST_URI']); // Remove any parameters set to 'all'
+$uri = rtrim($uri, '?&'); // Remove stray characters at the end of the URI
+if($uri !== $_SERVER['REQUEST_URI']) header("Location: {$uri}");
+
+// Includes
 require("pdo.php");
 require("functions.php");
 require("model/video.php");
@@ -46,9 +53,8 @@ h1 {
 </head>
 <body>
 <h1>{$title}</h1>
-
-
 EOT;
+
 // Set up columns
 $columns = [
 	'compName' => 'Comp',
@@ -68,13 +74,6 @@ $columns = [
 $videos = Video::getPublic($_GET);
 
 // Collect data for filter dropdowns
-$comps = [];
-$years = [];
-$rounds = [];
-$levels = [];
-$types = [];
-$events = [];
-$dancers = [];
 foreach($videos as $row){
 	// Pull relevant fields from row
 	$comp_id = $row['comp_id'];
@@ -95,34 +94,46 @@ foreach($videos as $row){
 	$entry_other_id = $row['entry_other_id'];
 	$otherName = $row['otherName'];
 
-	// Save values to dropdown arrays
-	$comps[$comp_id] = $compName;
-	$years[$year] = $year;
-	$rounds[$round_id] = $round_name;
-	$levels[$level_id] = $level_name;
-	$types[$type_id] = $performance_type_name;
-	$events[$event_id] = $event_name;
-	$dancers[$entry_lead_id] = $leadName;
-	$dancers[$followId] = $followName;
-	$dancers[$entry_other_id] = $otherName;
+	// Collect values from this row
+	$options['comp'][$comp_id] = $compName;
+	$options['year'][$year] = $year;
+	$options['round'][$round_id] = $round_name;
+	$options['level'][$level_id] = $level_name;
+	$options['type'][$type_id] = $performance_type_name;
+	$options['event'][$event_id] = $event_name;
+	$options['dancer'][$entry_lead_id] = $leadName;
+	$options['dancer'][$followId] = $followName;
+	$options['dancer'][$entry_other_id] = $otherName;
 }
 
-// Add "All" options to dropdowns, sort options, fe
-$dropdowns = ['comps', 'years', 'rounds', 'levels', 'types', 'events', 'dancers'];
-foreach($dropdowns as $dropdown){
-	$$dropdown["all"] = " All";
-	asort($$dropdown);
+// Add "All" to dropdown options, and sort each dropdown's list of options
+$dropdownArrayNames = ['comp', 'year', 'round', 'level', 'type', 'event', 'dancer'];
+foreach($dropdownArrayNames as $name){
+	$options[$name]['all'] = " All";
+	asort($options[$name]);
 }
 
-// Get dropdown markups
-$compDropdown = dropdown_markup('comp', $comps, $_GET['comp'] ?? 'all');
-$yearDropdown = dropdown_markup('year', $years, $_GET['year'] ?? 'all');
-$roundDropdown = dropdown_markup('round', $rounds, $_GET['round'] ?? 'all');
-$levelDropdown = dropdown_markup('level', $levels, $_GET['level'] ?? 'all');
-$typeDropdown = dropdown_markup('type', $types, $_GET['type'] ?? 'all');
-$eventDropdown = dropdown_markup('event', $events, $_GET['event'] ?? 'all');
-$dancerDropdown = dropdown_markup('dancer', $dancers, $_GET['dancer'] ?? 'all');
-$dancer2Dropdown = dropdown_markup('dancer2', $dancers, $_GET['dancer2'] ?? 'all');
+// Get dropdown markups (better way)
+$dropdownNames = ['comp', 'year', 'round', 'level', 'type', 'event', 'dancer', 'dancer2'];
+foreach($dropdownNames as $dName){
+	$selectedOption = $_GET[$dName] ?? 'all';
+	if($dName === 'dancer2') {
+		$arrayName = 'dancer';
+	} else {
+		$arrayName = $dName;
+	}
+	$dMarkup[$dName] = dropdown_markup($dName, $options[$arrayName], $selectedOption);
+}
+
+// Get dropdown markups (readable way)
+//$compDropdown = dropdown_markup('comp', $comps, $_GET['comp'] ?? 'all');
+//$yearDropdown = dropdown_markup('year', $years, $_GET['year'] ?? 'all');
+//$roundDropdown = dropdown_markup('round', $rounds, $_GET['round'] ?? 'all');
+//$levelDropdown = dropdown_markup('level', $levels, $_GET['level'] ?? 'all');
+//$typeDropdown = dropdown_markup('type', $types, $_GET['type'] ?? 'all');
+//$eventDropdown = dropdown_markup('event', $events, $_GET['event'] ?? 'all');
+//$dancerDropdown = dropdown_markup('dancer', $dancers, $_GET['dancer'] ?? 'all');
+//$dancer2Dropdown = dropdown_markup('dancer2', $dancers, $_GET['dancer2'] ?? 'all');
 
 // Display filter dropdowns
 echo <<<EOT
@@ -139,13 +150,13 @@ echo <<<EOT
 				<th>Dancer</th>
 			</tr>
 			<tr>
-				<td>{$compDropdown}</td>
-				<td>{$levelDropdown}</td>
-				<td>{$eventDropdown}</td>
-				<td>{$roundDropdown}</td>
-				<td>{$typeDropdown}</td>
-				<td>{$dancerDropdown}</td>
-				<td>{$dancer2Dropdown}</td>
+				<td>{$dMarkup['comp']}</td>
+				<td>{$dMarkup['level']}</td>
+				<td>{$dMarkup['event']}</td>
+				<td>{$dMarkup['round']}</td>
+				<td>{$dMarkup['type']}</td>
+				<td>{$dMarkup['dancer']}</td>
+				<td>{$dMarkup['dancer2']}</td>
 			</tr>
 		</table>
 	</form>
