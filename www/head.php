@@ -1,4 +1,10 @@
 <?php
+// Exit if not authorised
+if(!isset($_COOKIE['admin']) || $_COOKIE['admin'] !== substr($_GLOBALS['admin_hash'], -8)) {
+	http_response_code(404);
+	die("Page not found.");
+}
+
 $title = $title ?? "pDance";
 echo <<<EOT
 <html>
