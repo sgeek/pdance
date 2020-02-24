@@ -56,6 +56,23 @@ class Dancer
 	}
 
 	public function saveToDb() {
+		$query = "
+			INSERT INTO
+				dancer
+			SET
+				firstName = :firstName,
+				lastName = :lastName,
+				city = :city
+		";
+
+		$statement = $GLOBALS['pdo']->prepare($query);
+		$statement->execute([
+			'firstName' => $this->firstName,
+			'lastName' => $this->lastName,
+			'city' => $this->city,
+		]);
+
+		$this->id = $GLOBALS['pdo']->lastInsertId();
 
 	}
 

@@ -10,6 +10,7 @@ $id = (int) $id;
 
 
 if($id === -1) {
+	echo "<b><a href='add.php'>Add</a></b><br /><br />";
 	$dancers = Dancer::getAll();
 	show_table($dancers);
 } else {
