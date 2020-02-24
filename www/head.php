@@ -13,7 +13,8 @@ echo <<<EOT
 <link rel="stylesheet" type="text/css" href="/pdance/www/style.css" media="screen"/>
 </head>
 <body>
-<h1>{$title}</h1>
+<a style="display:block; text-align:left; margin-bottom:-1em;" href="/pdance/www">Admin home</a>
+<h1><a href=".">{$title}</a></h1>
 
 
 EOT;

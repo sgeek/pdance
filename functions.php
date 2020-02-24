@@ -17,11 +17,20 @@ function show_table($data, $columns=[]) {
 	}
 	echo "</tr>\n";
 	foreach($data as $row){
+		$columnNumber = 0;
 		echo "<tr>";
 		foreach($columns as $key => $name){
-			if(is_numeric($key)) $key = $name;
-      $value = $row[$key] ?? "";
-			echo "<td>{$value}</td>";
+			$columnNumber++;
+			if(is_numeric($key)) {
+				$key = $name;
+			}
+			$value = $row[$key] ?? "";
+			
+			if($columnNumber === 1) {
+				echo "<td><a href='?id={$value}' style='text-decoration:none;'>{$value}</a></td>";
+			} else {
+				echo "<td>{$value}</td>";
+			}
 		}
 		echo "</tr>\n";
 	}
