@@ -12,11 +12,11 @@ class Comp
 	public $folder;
 
 	function __construct($id=-1, $date="", $city=-1, $name="", $year="", $folder=""){
-		$this->id = $id;
+		$this->id = intval($id);
 		$this->date = $date;
-		$this->city = $city;
+		$this->city = intval($city);
 		$this->name = $name;
-		$this->year = $year;
+		$this->year = intval($year);
 		$this->folder = $folder;
 
 		if($id >= 0 && $date === "" && $name === "") {
@@ -62,8 +62,29 @@ class Comp
 	}
 
 	public function saveToDb() {
+		$query = "
+			INSERT INTO
+				comp
+			SET
+				date = :date,
+				city = :city,
+				name = :name,
+				year = :year,
+				folder = :folder
+		";
 
+		$statement = $GLOBALS['pdo']->prepare($query);
+		$statement->execute([
+			'date' => $this->date,
+			'city' => $this->city,
+			'name' => $this->name,
+			'year' => $this->year,
+			'folder' => $this->folder
+		]);
+
+		$this->id = $GLOBALS['pdo']->lastInsertId();
 	}
+
 
 	public static function getAll() {
 		$cities = City::getAll();

@@ -1,19 +1,9 @@
 --
-Display stuff (before I put a subset of the codebase up to display my instance):
---
-(purely about public listing of videos)
-- Implement filters on the front end
-- Implement column sorting on the front end (?)
-- Make front end prettier, just that one page
-
-
---
 Data entry stuff (before next comp):
 --
 (purely about data entry - neater, and not requiring phpMyAdmin)
-- Implement comp_event and comp_level
-- Add (and implement) comp_performance_type
-- Implement comp_dancer
+- Implement comp_event and comp_level (nice-to-have only)
+- Implement comp_dancer (nice-to-have only)
 - Proper management for all background data:
 	- city
 	- comp (also handles comp_event and comp_level)
@@ -26,7 +16,7 @@ Data entry stuff (before next comp):
 	
 
 --
-Auth stuff part 1 (before I use the full codebase for my public instance):
+Auth stuff (obsolete, just using single admin password instead):
 --
 (purely about securing pDance so that the management interface is safe to be public)
 - Implement authentication

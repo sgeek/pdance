@@ -30,10 +30,12 @@ function show_table($data, $columns=[]) {
 	return true;
 }
 
-function dropdown_markup($name="", $options=[], $default='all'){
+function dropdown_markup($name="", $options=[], $default='all', $autosubmit=true){
 	if($name === "" || $options === []) return "";
 
-	$markup = "<select name='{$name}' onchange='this.form.submit()'>";
+	$auto = $autosubmit === true ? "onchange='this.form.submit()'" : "";
+
+	$markup = "<select name='{$name}' {$auto}>";
 	$selected_already = false;
 	foreach($options as $key => $value){
 		if(strlen(trim($value)) > 0){
