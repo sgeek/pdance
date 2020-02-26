@@ -1,6 +1,6 @@
 <?php
 // Exit if not authorised (auth condition: cookie 'admin' set to the last 8 characters of the admin password hash)
-if(!isset($_COOKIE['admin']) || $_COOKIE['admin'] !== substr($_GLOBALS['admin_hash'], -8)) {
+if(!isset($_COOKIE['admin']) || $_COOKIE['admin'] !== substr($GLOBALS['admin_hash'], -8)) {
 	http_response_code(404);
 	die("Page not found.");
 }
