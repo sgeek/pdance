@@ -19,6 +19,7 @@ $columns = [
 ];
 
 if($id === -1) {
+	echo "<b><a href='add.php'>Add</a></b><br /><br />";
 	$entries = Entry::getAll();
 	show_table($entries, $columns);
 } else {

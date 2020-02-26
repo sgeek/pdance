@@ -110,6 +110,29 @@ class Entry
 	}
 
 	public function saveToDb() {
+		$query = "
+			INSERT INTO
+				entry
+			SET
+				comp = :comp,
+				event = :event,
+				level = :level,
+				`lead` = :lead,
+				follow = :follow,
+				other = :other
+		";
+
+		$statement = $GLOBALS['pdo']->prepare($query);
+		$statement->execute([
+			'comp' => $this->comp,
+			'event' => $this->event,
+			'level' => $this->level,
+			'lead' => $this->lead,
+			'follow' => $this->follow,
+			'other' => $this->other,
+		]);
+
+		$this->id = $GLOBALS['pdo']->lastInsertId();
 
 	}
 
