@@ -196,4 +196,42 @@ class Entry
 		return $rows;
 	}
 
+	public static function query($args = []){
+		$where = "1 = 1 \n";
+		if(isset($args['comp']))
+			$where .= "AND comp = :comp \n";
+		if(isset($args['event']))
+			$where .= "AND event = :event \n";
+		if(isset($args['level']))
+			$where .= "AND level = :level \n";
+		if(isset($args['lead']))
+			$where .= "AND `lead` = :lead \n";
+		if(isset($args['follow']))
+			$where .= "AND follow = :follow \n";
+		if(isset($args['other']))
+			$where .= "AND other = :other \n";
+
+		$query = "
+			SELECT
+				id
+			FROM
+				entry
+			WHERE
+				{$where}
+			LIMIT 2
+		";
+
+		$statement = $GLOBALS['pdo']->prepare($query);
+		$statement->execute($args);
+		$row = $statement->fetch();
+		
+		$id = $row['id'];
+		$row2 = $statement->fetch();
+
+		if($row === false || $row2 !== false) {
+			return false;
+		} else {
+			return $id;
+		}
+	}
 }

@@ -38,12 +38,12 @@ class Video
 	public $performanceType;
 	public $linkMarkup;
 
-	function __construct($id=-1, $entry=-1, $follow=-1, $round=-1, $heat=-1, $type=-1, $perm_lead=0, $perm_follow=0, $perm_other=0, $perm_final=0, $seconds=-1, $code='', $filename='', $file_extension='', $url='', $note=''){
+	function __construct($id=-1, $entry=-1, $follow=0, $round=-1, $heat=0, $type=-1, $perm_lead=0, $perm_follow=0, $perm_other=0, $perm_final=0, $seconds=-1, $code='', $filename='', $file_extension='', $url='', $note=''){
 		$this->id = $id;
 		$this->entry = $entry;
 		$this->follow = $follow;
 		$this->round = $round;
-		$this->heat = $round;
+		$this->heat = $heat;
 		$this->type = $type;
 		$this->perm_lead = $perm_lead;
 		$this->perm_follow = $perm_follow;
@@ -56,9 +56,9 @@ class Video
 		$this->url = $url;
 		$this->note = $note;
 
-		if($id >= 0 && $entry === -1 && $follow === -1) {
+		if($id >= 0 && $entry === -1) {
 			$this->loadFromDb();
-		} else if($id === -1 && $entry >= 0 && $follow >= 0) {
+		} else if($id === -1 && $entry >= 0) {
 			$this->saveToDb();
 		}
 	}
@@ -188,6 +188,36 @@ class Video
 	}
 
 	public function saveToDb() {
+		$query = "
+			INSERT INTO
+				video
+			SET
+				entry = :entry,
+				round = :round,
+				heat = :heat,
+				type = :type,
+				seconds = :seconds,
+				code = :code,
+				follow = :follow,
+				url = '',
+				note = ''
+		";
+		
+		$args = [
+			'entry' => $this->entry,
+			'round' => $this->round,
+			'heat' => $this->heat,
+			'type' => $this->type,
+			'seconds' => $this->seconds,
+			'code' => $this->code,
+			'follow' => $this->follow,
+		];
+		
+		$statement = $GLOBALS['pdo']->prepare($query);
+		$statement->execute($args);
+
+		$this->id = $GLOBALS['pdo']->lastInsertId();
+
 
 	}
 

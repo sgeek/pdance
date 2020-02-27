@@ -26,7 +26,8 @@ $columns = [
 ];
 
 if($id === -1) {
-	$videos = Video::getPublic($_GET);
+	echo "<b><a href='add.php'>Add</a></b><br /><br />";
+	$videos = Video::getAll($_GET);
 	show_table($videos, $columns);
 } else {
 	$video = new Video($id);
