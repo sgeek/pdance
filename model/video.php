@@ -12,7 +12,6 @@ class Video
 	public $perm_lead;
 	public $perm_follow;
 	public $perm_other;
-	public $perm_final;
 	public $seconds;
 	public $code;
 	public $filename;
@@ -46,7 +45,7 @@ class Video
 		2 => "N/A"
 	];
 
-	function __construct($id=-1, $entry=-1, $follow=0, $round=-1, $heat=0, $type=-1, $perm_lead=0, $perm_follow=0, $perm_other=0, $perm_final=0, $seconds=-1, $code='', $filename='', $file_extension='', $url='', $note=''){
+	function __construct($id=-1, $entry=-1, $follow=0, $round=-1, $heat=0, $type=-1, $perm_lead=0, $perm_follow=0, $perm_other=0, $seconds=-1, $code='', $filename='', $file_extension='', $url='', $note=''){
 		$this->id = $id;
 		$this->entry = $entry;
 		$this->follow = $follow;
@@ -225,8 +224,40 @@ class Video
 		$statement->execute($args);
 
 		$this->id = $GLOBALS['pdo']->lastInsertId();
+	}
 
+	public function updatePermission($permissionName='', $permissionValue=0) {
+		// Only recognise these specific column names
+		$columnNames = [
+			'pl' => 'perm_lead',
+			'pf' => 'perm_follow',
+			'po' => 'perm_other',
+		];
+		
+		$name = $columnNames[$permissionName] ?? '';
+		$value = intval($permissionValue);
+		
+		// If not valid, bail gracefully
+		if($name === '' || $value < -1 || $value > 2)
+			return false;
+		
+		$query = "
+			UPDATE
+				video
+			SET
+				{$name} = :value
+			WHERE
+				id = :id
+		";
+		
+		$args = [
+			'value' => $value,
+			'id' => $this->id,
+		];
+		$statement = $GLOBALS['pdo']->prepare($query);
+		$statement->execute($args);
 
+		$this->id = $GLOBALS['pdo']->lastInsertId();
 	}
 
 	// Use a more complex query, return a result set tailored for public display
