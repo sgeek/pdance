@@ -349,13 +349,33 @@ EOT;
 
 
 
-	public static function getAll() {
+	public static function getAll($got = []) {
 		$entries = Entry::getAll();
 		$rounds = Round::getAll();
 		$performanceTypes = PerformanceType::getAll();
 		$dancers = Dancer::getAll();
 
-		$statement = $GLOBALS['pdo']->query('SELECT * FROM video ORDER BY id ASC');
+		$conditions = "";
+		$args = [];
+		if(isset($got['comp']) && $got['comp'] > 0) {
+			$conditions = "\n\t\t\t\t AND entry.comp = :comp ";
+			$args['comp'] = $got['comp'];
+		}
+		
+		$query = "
+			SELECT
+				video.*
+			FROM
+				video
+				LEFT JOIN entry ON video.entry = entry.id
+			WHERE 1
+			{$conditions}
+			ORDER BY
+				id ASC
+		";
+		
+		$statement = $GLOBALS['pdo']->prepare($query);
+		$statement->execute($args);
 		$rows = [];
 		while($row = $statement->fetch()){
 			$id = $row['id'];
