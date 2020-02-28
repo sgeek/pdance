@@ -37,6 +37,14 @@ class Video
 	public $roundName;
 	public $performanceType;
 	public $linkMarkup;
+	
+	// lookup table for permission states
+	public static $permissions = [
+		-1 => "No",
+		0 => "Unknown",
+		1 => "Yes",
+		2 => "N/A"
+	];
 
 	function __construct($id=-1, $entry=-1, $follow=0, $round=-1, $heat=0, $type=-1, $perm_lead=0, $perm_follow=0, $perm_other=0, $perm_final=0, $seconds=-1, $code='', $filename='', $file_extension='', $url='', $note=''){
 		$this->id = $id;
