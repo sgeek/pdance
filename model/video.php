@@ -55,7 +55,6 @@ class Video
 		$this->perm_lead = $perm_lead;
 		$this->perm_follow = $perm_follow;
 		$this->perm_other = $perm_other;
-		$this->perm_final = $perm_final;
 		$this->seconds = $seconds;
 		$this->code = $code;
 		$this->filename = $filename;
@@ -85,7 +84,6 @@ class Video
 		$this->perm_lead = $row['perm_lead'];
 		$this->perm_follow = $row['perm_follow'];
 		$this->perm_other = $row['perm_other'];
-		$this->perm_final = $row['perm_final'];
 		$this->seconds = $row['seconds'];
 		$this->code = $row['code'];
 		$this->filename = $row['filename'];
@@ -166,7 +164,6 @@ class Video
 			'perm_lead' => $this->perm_lead,
 			'perm_follow' => $this->perm_follow,
 			'perm_other' => $this->perm_other,
-			'perm_final' => $this->perm_final,
 			'seconds' => $this->seconds,
 			'code' => $this->code,
 			'filename' => $this->filename,
@@ -226,6 +223,7 @@ class Video
 		$this->id = $GLOBALS['pdo']->lastInsertId();
 	}
 
+
 	public function updatePermission($permissionName='', $permissionValue=0) {
 		// Only recognise these specific column names
 		$columnNames = [
@@ -238,8 +236,10 @@ class Video
 		$value = intval($permissionValue);
 		
 		// If not valid, bail gracefully
-		if($name === '' || $value < -1 || $value > 2)
+		if($name === '' || $value < -1 || $value > 2) {
+			die("BAIL");
 			return false;
+		}
 		
 		$query = "
 			UPDATE
@@ -256,9 +256,8 @@ class Video
 		];
 		$statement = $GLOBALS['pdo']->prepare($query);
 		$statement->execute($args);
-
-		$this->id = $GLOBALS['pdo']->lastInsertId();
 	}
+
 
 	// Use a more complex query, return a result set tailored for public display
 	public static function getPublic($filters=[]) {
@@ -447,7 +446,7 @@ EOT;
 
 			// misc
 			$currentRound = $row['round'];
-			$row['roundName'] = $rounds[$currentRound]['name'];
+			$row['roundName'] = $rounds[$currentRound]['name'] ?? '';
 			$currentType = $row['type'];
 			$row['performanceType'] = $performanceTypes[$currentType]['name'];
 			$row['linkMarkup'] = "<a href='{$row['url']}'>{$row['url']}</a>";

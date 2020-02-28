@@ -1,6 +1,22 @@
 <?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
 require("../../main.php");
+
+
+// ==================
+// == Form handler ==
+// ==================
+if(isset($_GET['video'])){
+	$video = new Video($_GET['video']);
+	$column = $_GET['column'] ?? '';
+	$value = $_GET['value'] ?? -2;
+	$video->updatePermission($column, $value);
+	header("Location: ?comp={$_GET['comp']}");
+}
+
+
 
 $title = "Video permissions";
 require("../head.php");
@@ -11,19 +27,6 @@ $colorMatrix = [
 	1 => "lightgreen",
 	2 => "aquamarine"
 ];
-
-
-// ==================
-// == Form handler ==
-// ==================
-
-if(isset($_GET['video'])){
-	$video = new Video($_GET['video']);
-	$column = $_GET['column'] ?? '';
-	$value = $_GET['value'] ?? -2;
-	$video->updatePermission($column, $value);
-	header("Location: ?comp={$_GET['comp']}");
-}
 
 
 // ==================
