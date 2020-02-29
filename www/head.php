@@ -6,15 +6,14 @@ if(!isset($_COOKIE['admin']) || $_COOKIE['admin'] !== substr($GLOBALS['admin_has
 }
 
 $title = $title ?? "pDance";
-echo <<<EOT
+echo "
 <html>
 <head>
 <title>pDance: {$title}</title>
-<link rel="stylesheet" type="text/css" href="/pdance/www/style.css" media="screen"/>
+<link rel='stylesheet' type='text/css' href='/pdance/www/style.css' media='screen'/>
+<meta http-equiv='Cache-Control' content='no-store' />
 </head>
 <body>
-<a style="display:block; text-align:left; margin-bottom:-1em;" href="/pdance/www">Admin home</a>
-<h1><a href=".">{$title}</a></h1>
-
-
-EOT;
+<a style='display:block; text-align:left; margin-bottom:-1em;' href='/pdance/www'>Admin home</a>
+<h1><a href='.'>{$title}</a></h1>
+";
