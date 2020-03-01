@@ -103,8 +103,6 @@ if(isset($_POST['lead0']) || isset($_POST['follow0'])) {
 				{$followName},
 				{$otherName})</b><br />";
 		} else {
-//	function __construct($id=-1, $entry=-1, $follow=0, $round=-1, $heat=0, $type=-1, $perm_lead=0, $perm_follow=0, $perm_other=0, $seconds=-1, $code='', $filename='', $file_extension='', $url='', $note=''){
-
 			$video = new Video(-1, $entry, $follow, $round, $heat, $type, 0,0,0, $seconds, $code);
 			$id = $video->id ?? 0;
 
