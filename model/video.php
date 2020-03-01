@@ -207,6 +207,10 @@ class Video
 				note = ''
 		";
 		
+		if($this->heat === "") {
+			$this->heat = 0;
+		}
+		
 		$args = [
 			'entry' => $this->entry,
 			'round' => $this->round,

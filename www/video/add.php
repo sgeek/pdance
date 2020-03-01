@@ -86,15 +86,12 @@ if(isset($_POST['lead0']) || isset($_POST['follow0'])) {
 			"lead" => $lead,	
 		];
 		
-		// If DWAS then need follow
-		if($follow > 0 && $event == 2){
-			$args["follow"] = $follow;
-			$follow = -1;
-		}
-
 		$entry = Entry::query($args);
 		
 		if($entry === false) {
+			$leadName = $dancerNames[$lead] ?? "--";
+			$followName = $dancerNames[$follow] ?? "--";
+			$otherName = $dancerNames[$other] ?? "--";
 			echo "<b style='background-color:lightcoral;'>
 				Entry not found! 
 				Failed to add Video for
@@ -102,9 +99,9 @@ if(isset($_POST['lead0']) || isset($_POST['follow0'])) {
 				of {$levelNames[$level]}
 				{$eventNames[$event]}
 				at {$compNames[$comp]}
-				({$dancerNames[$lead]},
-				{$dancerNames[$follow]},
-				{$dancerNames[$other]})</b><br />";
+				({$leadName},
+				{$followName},
+				{$otherName})</b><br />";
 		} else {
 			$video = new Video(-1, $entry, $follow, $round, $heat, $type, 0,0,0,0, $seconds, $code);
 			$id = $video->id ?? 0;
